@@ -10,15 +10,19 @@ class Access extends BaseController
 	protected function db() {
 		$sucursal = $this->sucursal();
 		if ( !$sucursal ) {
-			return redirect()->to('/home');
+			// return redirect()->to('/home');
+			return null;
 		}
 		return $this->selectDb($sucursal);
 	}
 
 	public function index()
 	{
+		if ( !$db = $this->db() ) {
+			return redirect()->to('/home');
+		}
 		$sucursal = $this->sucursal();
-		$db = $this->db();
+		
 		if ( $this->request->getMethod() == 'post' ) {
 			try {
 				$codigo = trim($this->request->getPost('codigo'));
@@ -64,8 +68,10 @@ class Access extends BaseController
 	}
 
 	public function correcto($id) {
+		if ( !$db = $this->db() ) {
+			return redirect()->to('/home');
+		}
 		$sucursal = $this->sucursal();
-		$db = $this->db();
 		$mdInscripcion = model('Inscripcion', true, $db);
 		$inscripcion = $mdInscripcion->find($id);
 		

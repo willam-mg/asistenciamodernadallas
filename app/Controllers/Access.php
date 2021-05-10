@@ -78,12 +78,35 @@ class Access extends BaseController
 		$mdPlan = model('Plan', true, $db);
 		$plan = $mdPlan->find($planHorario['plan_id']);
 
+		$mensualidades = $db->table('mensualidad')
+			->join('tb_year', 'mensualidad.year_id = tb_year.id')
+			->where([
+				'mensualidad.inscripcion_id'=>$inscripcion['id'],
+				'mensualidad.estado'=>0,
+			])->get()->getResultArray(); 
+
+		$seminarios = $db->table('asistencia_seminario')
+			->join('seminario', 'asistencia_seminario.seminario_id = seminario.id')
+			->where('asistencia_seminario.estudiante_id', $estudiante['id'])
+			->where('asistencia_seminario.saldo > ', 0)
+			->get()->getResultArray(); 
+
+		$casilleros = $db->table('asignacion_casillero')
+			->join('casillero', 'asignacion_casillero.casillero_id = casillero.id')
+			->where('asignacion_casillero.estudiante_id', $estudiante['id'])
+			->where('asignacion_casillero.saldo > ', 0)
+			->get()->getResultArray(); 
+		// return var_dump($casilleros[0]);
+
 		return view('access/correcto', [
 			'sucursal'=>$sucursal,
 			'estudiante'=>$estudiante,
 			'inscripcion'=>$inscripcion,
 			'planHorario'=>$planHorario,
 			'plan'=>$plan,
+			'mensualidades'=>$mensualidades,
+			'seminarios'=>$seminarios,
+			'casilleros'=>$casilleros,
 		]);
 	}
 	

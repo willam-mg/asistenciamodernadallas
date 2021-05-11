@@ -22,23 +22,16 @@
             left:-300px;
         }
     </style>
-    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.2.min.js"></script> -->
-    <!-- <link rel="stylesheet" href="/assets/css/custom.css"> -->
-    <script src="<?=base_url('/assets/js/jquery-3.6.0.slim.min.js')?>"></script>
-    <!-- <link rel="preload" href="/assets/img/modernadallas-logo-control-de-acceso.png" as="image"> -->
+    <script src="/assets/js/jquery-3.6.0.slim.min.js"></script>
 </head>
 <body>
-    <?php 
-        // $session = \Config\Services::session();
-        // echo $session->getFlashdata('message'); 
-    ?>
     <div class="wrapper">
         <div class="container">
             <?= $this->renderSection('content') ?>
         </div>
     </div>
-    <script src="/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
 
     <script>
         $("#estudiante-codigo").focus();

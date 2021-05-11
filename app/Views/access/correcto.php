@@ -93,22 +93,3 @@ use App\Models\Mensualidad;
         </div>
     </div>
 <?= $this->endSection() ?>
-
-<script>
-    $(document).ready(function () {
-        // var e = 0,
-        //     n = setInterval(function () {
-        //         e % 2 == 0 ? $(".debe").addClass("danger") : $(".debe").removeClass("danger"), 5e4 === ++e && clearInterval(n);
-        //     }, 200);
-
-        setTimeout(() => {
-            console.log("redirigiendo"), (location.href = "/access");
-        }, 3e5),
-            $("body").on("keypress", function (e) {
-                13 != e.which || e.shiftKey || (e.preventDefault(), $("#w0").submit());
-            }),
-            $("body").on("click", function (e) {
-                $("#estudiante-codigo").focus();
-            });
-    });
-</script>

@@ -6,7 +6,6 @@ class Home extends BaseController
 {
 	public function index()
 	{
-		// helper('cookie');
 		if ( get_cookie('sucursal', true) ) {
 			return redirect()->to('/access');
 		}

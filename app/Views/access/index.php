@@ -19,26 +19,3 @@
     
     
 <?= $this->endSection() ?>
-
-<script>
-alert('fdfds');
-        $("#estudiante-codigo").focus();
-
-    $("body").on("keypress", function (e) {
-        13 != e.which || e.shiftKey || (e.preventDefault(), $("#w0").submit());
-    }),
-    $("body").on("click", function (e) {
-        alert('clicked');
-        $("#estudiante-codigo").focus();
-    });
-
-
-
-    // $(document).ready(function () {
-    //     setTimeout(() => {
-    //         console.log("redirigiendo"), (location.href = "/access");
-    //     }, 3e5),
-            
-            
-    // });
-</script>

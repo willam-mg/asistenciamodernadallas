@@ -4,21 +4,9 @@ namespace App\Controllers;
 
 class Access extends BaseController
 {
-	protected function sucursal() {
-		return get_cookie('sucursal', true);
-	}
-	protected function db() {
-		$sucursal = $this->sucursal();
-		if ( !$sucursal ) {
-			// return redirect()->to('/home');
-			return null;
-		}
-		return $this->selectDb($sucursal);
-	}
-
 	public function index()
 	{
-		if ( !$db = $this->db() ) {
+		if ( !$db = $this->getDb() ) {
 			return redirect()->to('/home');
 		}
 		$sucursal = $this->sucursal();
@@ -26,18 +14,18 @@ class Access extends BaseController
 		if ( $this->request->getMethod() == 'post' ) {
 			try {
 				$codigo = trim($this->request->getPost('codigo'));
-				// $estudiante = new \App\Models\Estudiante();
-				$mdEstudiante = model('Estudiante', true, $db);
+				if ( !$codigo ) {
+					return redirect()->to('/home');
+				}
 				$codigoAcceso = substr($codigo, 0, -1);
-				$estudiante = $mdEstudiante
+
+				$estudiante = model('Estudiante', true, $db)
 					->where('codigo', $codigoAcceso)
                   	->first();
-				// count incripciones 
-				$mdInscripcion = model('Inscripcion', true, $db);
-				// return $estudiante['id'];
-				$builder = $db->table('inscripcion');
-				// $countInscripciones = $builder->where('estudiante_id', $estudiante['id'])->countAllResults(); 
-				$inscripciones = $builder->where('estudiante_id', $estudiante['id'])->get()->getResultArray(); 
+				$inscripciones = $db->table('inscripcion')
+					->where('estudiante_id', $estudiante['id'])
+					->get()
+					->getResultArray(); 
 
 				if ( count($inscripciones) == 0 ) {
 					throw new \Exception("El estuiante no tiene inscripciones");
@@ -45,18 +33,14 @@ class Access extends BaseController
 
 				if ( count($inscripciones) > 1 ) {
 					return redirect()->to('/access/seleccionar/'.$estudiante['id']);
-				} else {
-					// $inscripcion = $builder->where('estudiante_id', $estudiante['id'])->first(); 
-					$inscripcion = $inscripciones[0]; 
-					return redirect()->to('/access/correcto/'.$inscripcion['id']);
-				}
-				return var_dump($query);
+				} 
+
+				$inscripcion = $inscripciones[0]; 
+				return redirect()->to('/access/correcto/'.$inscripcion['id']);
 			} catch (\Throwable $th) {
-				// return $th->getMessage();
+				$this->session->setFlashdata('message', $th->getMessage());
 				return redirect()->to('/access/incorrecto/');
-				// $this->session->setFlashdata('message', $th->getMessage());
 			}
-			
 		}	
 		return view('access/index', [
 			'sucursal'=>$sucursal
@@ -64,25 +48,37 @@ class Access extends BaseController
 	}
 
 	public function seleccionar($id) {
-		echo 'el estudiante es: '.$id;
+		$options = [
+				'max-age'  => 3600,
+				's-maxage' => 9000,
+				'etag'     => 'abcde'
+		];
+		$this->response->setCache($options);
+
+		$sucursal = $this->sucursal();
+		echo 'Seleccionar el estudiante es: '.$id;
 	}
 
 	public function correcto($id) {
-		if ( !$db = $this->db() ) {
+		$options = [
+				'max-age'  => 3600,
+				's-maxage' => 9000,
+				'etag'     => 'abcde'
+		];
+		$this->response->setCache($options);
+
+		if ( !$db = $this->getDb() ) {
 			return redirect()->to('/home');
 		}
 		$sucursal = $this->sucursal();
-		$mdInscripcion = model('Inscripcion', true, $db);
-		$inscripcion = $mdInscripcion->find($id);
+
+		$inscripcion = model('Inscripcion', true, $db)->find($id);
 		
-		$mdEstudiante = model('Estudiante', true, $db);
-		$estudiante = $mdEstudiante->find($inscripcion['estudiante_id']);
+		$estudiante = model('Estudiante', true, $db)->find($inscripcion['estudiante_id']);
 		
-		$mdPlanHorario = model('PlanHorario', true, $db);
-		$planHorario = $mdPlanHorario->find($inscripcion['plan_horario_id']);
+		$planHorario = model('PlanHorario', true, $db)->find($inscripcion['plan_horario_id']);
 		
-		$mdPlan = model('Plan', true, $db);
-		$plan = $mdPlan->find($planHorario['plan_id']);
+		$plan = model('Plan', true, $db)->find($planHorario['plan_id']);
 
 		$mensualidades = $db->table('mensualidad')
 			->join('tb_year', 'mensualidad.year_id = tb_year.id')
@@ -102,7 +98,6 @@ class Access extends BaseController
 			->where('asignacion_casillero.estudiante_id', $estudiante['id'])
 			->where('asignacion_casillero.saldo > ', 0)
 			->get()->getResultArray(); 
-		// return var_dump($casilleros[0]);
 
 		return view('access/correcto', [
 			'sucursal'=>$sucursal,
@@ -117,6 +112,17 @@ class Access extends BaseController
 	}
 	
 	public function incorrecto() {
-		return view('access/incorrecto');
+		$options = [
+				'max-age'  => 3600,
+				's-maxage' => 9000,
+				'etag'     => 'abcde'
+		];
+		$this->response->setCache($options);
+
+		$sucursal = $this->sucursal();
+
+		return view('access/incorrecto', [
+			'sucursal'=>$sucursal,
+		]);
 	}
 }

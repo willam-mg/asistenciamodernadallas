@@ -6,18 +6,23 @@ use App\Models\Mensualidad;
 <?= $this->extend('layouts/main') ?>
 
 <?= $this->section('content') ?>
+    <audio src="/assets/audio/correcto.wav" autoplay="autoplay"></audio>
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
             <div class="content-foto">
-                <?php if ( $estudiante['foto'] ) { ?>
-                    <img src="<?= Params::path_server.'/uploads/estudiantes/'.$estudiante['foto'] ?>" alt="Foto" width="100%">
+                <?php if ( $estudiante['foto'] ) { 
+                    $image = Params::path_server.'/uploads/estudiantes/'.$estudiante['foto'];
+                ?>
+                    <img src="<?=$image.'?'.time()?>" alt="Foto" width="100%">
                 <?php } ?>
             </div>
             <h5>
                 <span style="color:#cc3487">
                     Estudiante: 
                 </span>
-                <?=$estudiante['nombre'].' '.$estudiante['apellido']?>
+                <span class="text-capitalize">
+                    <?=$estudiante['nombre'].' '.$estudiante['apellido']?>
+                </span>
             </h5>
             <h5>
                 <span style="color:#cc3487">

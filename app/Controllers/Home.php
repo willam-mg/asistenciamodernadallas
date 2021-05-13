@@ -6,6 +6,13 @@ class Home extends BaseController
 {
 	public function index()
 	{
+		$options = [
+				'max-age'  => 3600,
+				's-maxage' => 9000,
+				'etag'     => 'abcde'
+		];
+		$this->response->setCache($options);
+
 		if ( get_cookie('sucursal', true) ) {
 			return redirect()->to('/access');
 		}

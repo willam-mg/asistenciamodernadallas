@@ -6,6 +6,7 @@ use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Config\Services;
 
 /**
  * Class BaseController
@@ -20,6 +21,8 @@ use Psr\Log\LoggerInterface;
 
 class BaseController extends Controller
 {
+	private $maxAgeCache = ENVIRONMENT == 'production'?31536000:3600;
+	private $sMaxAge = ENVIRONMENT == 'production'?31536000:9000;
 	/**
 	 * An array of helpers to be loaded automatically upon
 	 * class instantiation. These helpers will be available
@@ -28,7 +31,8 @@ class BaseController extends Controller
 	 * @var array
 	 */
 	protected $helpers = [
-		'cookie'
+		'cookie',
+		'date'
 	];
 
 	/**
@@ -49,29 +53,50 @@ class BaseController extends Controller
 		// Do Not Edit This Line
 		parent::initController($request, $response, $logger);
 
-		//--------------------------------------------------------------------
-		// Preload any models, libraries, etc, here.
-		//--------------------------------------------------------------------
-		// E.g.: $this->session = \Config\Services::session();
         if(session_status() == PHP_SESSION_NONE)
         {
-            // $this->session = Services::session();
-			$this->session = \Config\Services::session();
+            $this->session = Services::session();
         }
+
+		// set cache control
+		$this->response->setCache([
+				'max-age'  => $this->maxAgeCache,
+				's-maxage' => $this->sMaxAge,
+				'etag'     => 'abcde'
+		]);
+		// $this->cachePage($this->maxAgeCache);
 	}
 
 	protected function selectDb($sucursal) {
 		switch ($sucursal) {
 			case 'quillacollo':
-				// return \Config\Database::connect('default');
-				return \Config\Database::connect();
+				return \Config\Database::connect(); // by default quillacollo
 				break;
 			case 'sacaba':
 				return \Config\Database::connect('sacaba');
+				break;
+			case 'cochabamba':
+				return \Config\Database::connect('cochabamba');
 				break;
 			default:
 				return null;
 				break;
 		}
+	}
+
+	protected function sucursal() {
+		return get_cookie('sucursal', true);
+	}
+
+	protected function getDb() {
+		$sucursal = $this->sucursal();
+		if ( $sucursal ) {
+			$db = $this->selectDb($sucursal);
+			if (!$db) {
+				return null;
+			}
+			return $db;
+		}
+		return null;
 	}
 }

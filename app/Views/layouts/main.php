@@ -29,11 +29,27 @@
             top:-3000px;
             left:-300px;
         }
+        .alert-flash {
+            position:fixed !important;
+            width:100%;
+            color: white;
+            background-color: #00000029 !important;
+        }
     </style>
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <script src="/assets/js/jquery-3.6.0.slim.min.js"></script>
 </head>
 <body>
+    <?php if (session()->getFlashdata('message') !== NULL) : ?>
+        <div class="alert alert-dismissible fade show text-center p-3 alert-flash"  role="alert">
+            <h3>
+                <small>
+                    <?php echo session()->getFlashdata('message'); ?>
+                </small>
+            </h3>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+    <?php endif; ?>
     <div class="wrapper">
         <div class="container">
             <?= $this->renderSection('content') ?>

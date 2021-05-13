@@ -81,8 +81,6 @@ class Access extends BaseController
 				$idInscripcion = $inscripciones[$index];
 				return redirect()->to('/access/correcto/'.$idInscripcion['id']);
 			} catch (\Throwable $th) {
-				// throw $th;
-				// return $th->getMessage();
 				$this->session->setFlashdata( 'message', $th->getMessage() );
 			}
 		}

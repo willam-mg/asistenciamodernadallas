@@ -45,44 +45,65 @@ use App\Models\Mensualidad;
                     </form>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                    <h5>Mensualidades</h5>
-                    <?php foreach ($mensualidades as $key => $mensualidad) { ?>
-                        <p style="border:1px solid white;padding:10px">
-                            <?=Mensualidad::getMes($mensualidad['month']).' '.$mensualidad['year']?> 
-                        </p>
-                    <?php } ?>
+            <?php if ( $debe ){ ?>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                        <h5>Mensualidades</h5>
+                        <?php foreach ($mensualidades as $key => $mensualidad) { ?>
+                            <p style="border:1px solid white;padding:10px">
+                                <?=Mensualidad::getMes($mensualidad['month']).' '.$mensualidad['year']?> 
+                            </p>
+                        <?php } ?>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                        <h5>Casilleros</h5>
+                        <?php foreach ($casilleros as $key => $casillero) { ?>
+                            <p style="border:1px solid white;padding:10px">
+                                N° <?=$casillero['numero']?> <br>
+                                <?=$casillero['saldo'].' Bs.'?> 
+                            </p>
+                        <?php } ?>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                        <h5>Seminarios</h5>
+                        <?php foreach ($seminarios as $key => $seminario) { ?>
+                            <p style="border:1px solid white;padding:10px">
+                                <?=$seminario['nombre']?> <br>
+                                <?=$seminario['saldo'].' Bs.'?> 
+                            </p>
+                        <?php } ?>
+                    </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                    <h5>Casilleros</h5>
-                    <?php foreach ($casilleros as $key => $casillero) { ?>
-                        <p style="border:1px solid white;padding:10px">
-                            N° <?=$casillero['numero']?> <br>
-                            <?=$casillero['saldo'].' Bs.'?> 
-                        </p>
-                    <?php } ?>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                    <h5>Seminarios</h5>
-                    <?php foreach ($seminarios as $key => $seminario) { ?>
-                        <p style="border:1px solid white;padding:10px">
-                            <?=$seminario['nombre']?> <br>
-                            <?=$seminario['saldo'].' Bs.'?> 
-                        </p>
-                    <?php } ?>
-                </div>
-            </div>
+            <?php } ?>
+
             
             <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <?php if ( count($mensualidades) > 0 || count($seminarios) > 0 || count($casilleros) > 0 ){?>					
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">                    
+                    <?php if ( $debe ){ ?>					
                         <div class="alert alert-warning text-uppercase text-center" role="alert">
-							Por favor pase por secretaria a regular sus cuotas pendientes
+                            <h5>
+							    Por favor pase por secretaria a regular sus cuotas pendientes
+                            </h5>
+                            <h5>
+                                <small>
+                                    N° lecturas: 
+                                    <b>
+                                        <?=$numIngresos?>
+                                    </b>
+                                </small>
+                            </h5>
 						</div>
 					<?php } else { ?>
 						<div class="alert alert-success text-uppercase text-center" role="alert">
-                            <b>Habilitado</b>
+                            <h4>Habilitado</h4>
+                            <h5>
+                                <small>
+                                    N° lecturas: 
+                                    <b>
+                                        <?=$numIngresos?>
+                                    </b>
+                                </small>
+                            </h5>
 						</div>
 					<?php } ?>
                 </div>
@@ -91,7 +112,17 @@ use App\Models\Mensualidad;
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="height:10px">
+            <h4 id="showBarCode"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+            Hoy: <?=date('d/m/Y')?>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-right">
             <p class="text-uppercase">
                 <?=$sucursal?>
             </p>

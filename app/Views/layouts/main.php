@@ -48,6 +48,11 @@
         $("body").on("click", function (e) {
             $("#estudiante-codigo").focus();
         });
+        $("#estudiante-codigo").on('input', function() {
+            // console.log( $(this).val() );
+            $("#showBarCode").html("");
+            $("#showBarCode").append( $(this).val() );
+        });
     </script>
 </body>
 </html>

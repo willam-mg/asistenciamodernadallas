@@ -17,7 +17,7 @@ use App\Models\Mensualidad;
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
             <div class="row g-0">
-                <div class="col-xs-5 col-sm-5 col-md-5">
+                <div class="col-xs-4 col-sm-5 col-md-5 col-lg-5" style="max-width:40% !important">
                     <div class="content-foto" style="min-height:97px !important">
                         <?php if ( $estudiante['foto'] ) { 
                             $image = Params::path_server.'/uploads/estudiantes/'.$estudiante['foto'];
@@ -26,7 +26,7 @@ use App\Models\Mensualidad;
                         <?php } ?>
                     </div>
                 </div>
-                <div class="col-xs-7 col-sm-7 col-md-7">
+                <div class="col-xs-5 col-sm-7 col-md-7 col-lg-7" style="max-width:60% !important">
                     <h5 class="card-title">
                         <span style="color:#cc3487">
                             Estudiante: 
@@ -84,10 +84,10 @@ use App\Models\Mensualidad;
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
             Hoy: <?=date('d/m/Y')?>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-right">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
             <p class="text-uppercase">
                 <?=$sucursal?>
             </p>

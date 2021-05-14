@@ -9,9 +9,7 @@
     <link rel="preload" href="/assets/css/bootstrap.min.css" as="style">
     <link rel="preload" href="/assets/js/jquery-3.6.0.slim.min.js" as="script">
     <link rel="preload" href="/assets/js/bootstrap.min.js" as="script">
-    <link rel="preload" href="/assets/img/modernadallas-logo-control-de-acceso.png" as="image" media="(max-width: 500px)">
 
-    <!-- <link rel="preload" href="/assets/css/bootstrap.min.css?v=<?=strtotime(date('Y-m-d', strtotime('+1 week')))?>" as="style" onload="null;this.rel='stylesheet'"> -->
     <style>
         .content-foto{
             background-color: transparent;
@@ -65,7 +63,6 @@
             $("#estudiante-codigo").focus();
         });
         $("#estudiante-codigo").on('input', function() {
-            // console.log( $(this).val() );
             $("#showBarCode").html("");
             $("#showBarCode").append( $(this).val() );
         });

@@ -13,7 +13,7 @@ class Home extends BaseController
 		if ( $this->request->getMethod() == 'post' ) {
 			try {
 				$sucursal = $this->request->getPost('sucursal');
-				$created = set_cookie('sucursal', $sucursal, '3600'); 
+				$created = set_cookie('sucursal', $sucursal, $this->$maxAgeCache); 
 				return view('home/done');
 			} catch (\Throwable $th) {
 				$this->session->setFlashdata('message', $th->getMessage());

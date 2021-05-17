@@ -21,8 +21,8 @@ use Config\Services;
 
 class BaseController extends Controller
 {
-	private $maxAgeCache = ENVIRONMENT == 'production'?31536000:3600;
-	private $sMaxAge = ENVIRONMENT == 'production'?31536000:9000;
+	protected $maxAgeCache = ENVIRONMENT === 'production'?31536000:3600;
+	private $sMaxAge = ENVIRONMENT === 'production'?31536000:9000;
 	/**
 	 * An array of helpers to be loaded automatically upon
 	 * class instantiation. These helpers will be available

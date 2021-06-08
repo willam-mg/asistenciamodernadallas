@@ -9,7 +9,8 @@ class Access extends BaseController
 {
 	public function index()
 	{
-		if ( !$db = $this->getDb() ) {
+		$db = $this->getDb();
+		if ( !$db ) {
 			return redirect()->to('/home');
 		}
 		$sucursal = $this->sucursal();
@@ -42,16 +43,33 @@ class Access extends BaseController
 				return redirect()->to('/access/correcto/'.$inscripcion['id']);
 			} catch (\Throwable $th) {
 				$this->session->setFlashdata('message', $th->getMessage());
+				if ( $this->request->isAJAX() ) {
+					return json_encode([
+						'estudiante_id'=>null,
+						'view'=> view('access/_incorrecto', [
+							'sucursal'=>$sucursal
+						])
+					]);
+				}
 				return redirect()->to('/access/incorrecto/');
 			}
 		}	
+		if ( $this->request->isAJAX() ) {
+			return json_encode([
+				'estudiante_id'=>null,
+				'view'=> view('access/_index', [
+					'sucursal'=>$sucursal
+				])
+			]);
+		}
 		return view('access/index', [
 			'sucursal'=>$sucursal
 		]);
 	}
 
 	public function seleccionar($id) {
-		if ( !$db = $this->getDb() ) {
+		$db = $this->getDb();
+		if ( !$db ) {
 			return redirect()->to('/home');
 		}
 		$sucursal = $this->sucursal();
@@ -67,7 +85,7 @@ class Access extends BaseController
 
 		if ( $this->request->getMethod() == 'post' ) {
 			try {
-				$index = $this->request->getPost('index');
+				$index = $this->request->getPost('codigo');
 				if ( !$index ) {
 					throw new \Exception("Ingrese el numero de su inscripcion");
 				}
@@ -85,6 +103,16 @@ class Access extends BaseController
 			}
 		}
 
+		if ( $this->request->isAJAX() ) {
+			return json_encode([
+				'estudiante_id'=>$estudiante['id'],
+				'view'=>view('access/_seleccionar', [
+					'sucursal'=>$sucursal,
+					'estudiante'=>$estudiante,
+					'inscripciones'=>$inscripciones
+				])
+			]);
+		}
 		return view('access/seleccionar', [
 			'sucursal'=>$sucursal,
 			'estudiante'=>$estudiante,
@@ -93,7 +121,8 @@ class Access extends BaseController
 	}
 
 	public function correcto($id) {
-		if ( !$db = $this->getDb() ) {
+		$db = $this->getDb();
+		if ( !$db ) {
 			return redirect()->to('/home');
 		}
 		$sucursal = $this->sucursal();
@@ -140,31 +169,38 @@ class Access extends BaseController
 			$debe = true;
 		}
 
-		return view('access/correcto', [
-			'sucursal'=>$sucursal,
-			'estudiante'=>$estudiante,
-			'inscripcion'=>$inscripcion,
-			'planHorario'=>$planHorario,
-			'plan'=>$plan,
-			'mensualidades'=>$mensualidades,
-			'seminarios'=>$seminarios,
-			'casilleros'=>$casilleros,
-			'lecturas'=>$lecturas,
-			'numIngresos'=>$numIngresos,
-			'debe'=>$debe
-		]);
+		$dataCompose = [
+				'sucursal'=>$sucursal,
+				'estudiante'=>$estudiante,
+				'inscripcion'=>$inscripcion,
+				'planHorario'=>$planHorario,
+				'plan'=>$plan,
+				'mensualidades'=>$mensualidades,
+				'seminarios'=>$seminarios,
+				'casilleros'=>$casilleros,
+				'lecturas'=>$lecturas,
+				'numIngresos'=>$numIngresos,
+				'debe'=>$debe
+		];
+		if ( $this->request->isAJAX() ) {
+			return json_encode([
+				'estudiante_id67'=>null,
+				'view'=>view('access/_correcto', $dataCompose)
+			]);
+		}
+		return view('access/correcto', $dataCompose);
 	}
 	
 	public function incorrecto() {
-		$options = [
-				'max-age'  => 3600,
-				's-maxage' => 9000,
-				'etag'     => 'abcde'
-		];
-		$this->response->setCache($options);
-
 		$sucursal = $this->sucursal();
-
+		if ( $this->request->isAJAX() ) {
+			return json_encode([
+				'estudiante_id'=>null,
+				'view'=> view('access/_incorrecto', [
+					'sucursal'=>$sucursal
+				])
+			]);
+		}
 		return view('access/incorrecto', [
 			'sucursal'=>$sucursal,
 		]);

@@ -7,7 +7,7 @@
     <title>Moderna dallas</title>
 
     <link rel="preload" href="/assets/css/bootstrap.min.css" as="style">
-    <link rel="preload" href="/assets/js/jquery-3.6.0.slim.min.js" as="script">
+    <link rel="preload" href="/assets/js/jquery-3.6.0.min.js" as="script">
     <link rel="preload" href="/assets/js/bootstrap.min.js" as="script">
 
     <style>
@@ -31,19 +31,56 @@
             <?= $this->renderSection('content') ?>
         </div>
     </div>
-    <script src="/assets/js/jquery-3.6.0.slim.min.js"></script>
+    <script src="/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
     <script>
-        $("#estudiante-codigo").focus();
-        $("body").on("keypress", function (e) {
-            13 != e.which || e.shiftKey || (e.preventDefault(), $("#w0").submit());
-        }),
-        $("body").on("click", function (e) {
-            $("#estudiante-codigo").focus();
+        var sending = false;
+        var estudiante_id = null;
+
+        $('#w0').submit(function(event) {
+            event.preventDefault();
+            if (sending == false) {
+                sending = true;
+                $.ajax({
+                    type: "post",
+                    url: estudiante_id?"/access/seleccionar/"+estudiante_id:"/access/index",
+                    data: $('#w0').serialize(),
+                    dataType: "JSON",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    complete: function (jqXHR, textStatus) {
+                        sending = false;
+                        $("#estudiante-codigo").val('');
+                    },
+                    success: function (response) {
+                        if (response.estudiante_id) {
+                            estudiante_id = response.estudiante_id;
+                        } else {
+                            estudiante_id = null;
+                        }
+                        $('#content').html('');
+                        $('#content').append(response.view);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status == "500") {
+                            location.reload();
+                        }
+                    },
+                });
+            }
         });
-        $("#estudiante-codigo").on('input', function() {
-            $("#showBarCode").html("");
-            $("#showBarCode").append( $(this).val() );
+
+        $(document).ready(function () {
+            $("#estudiante-codigo").focus();
+            $("body").on("keypress", function (e) {
+                13 != e.which || e.shiftKey || (e.preventDefault(), $("#w0").submit());
+            }),
+            $("body").on("click", function (e) {
+                $("#estudiante-codigo").focus();
+            });
+            $("#estudiante-codigo").on('input', function() {
+                $("#showBarCode").html("");
+                $("#showBarCode").append( $(this).val() );
+            });
         });
     </script>
 </body>

@@ -19,6 +19,9 @@ class Home extends BaseController
 				$this->session->setFlashdata('message', $th->getMessage());
 			}
 		}	
+		if ( $this->request->isAJAX() ) {
+			return view('access/_index');
+		}
 		return view('home/index');
 	}
 }

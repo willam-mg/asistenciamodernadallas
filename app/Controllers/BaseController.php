@@ -91,11 +91,7 @@ class BaseController extends Controller
 	protected function getDb() {
 		$sucursal = $this->sucursal();
 		if ( $sucursal ) {
-			$db = $this->selectDb($sucursal);
-			if (!$db) {
-				return null;
-			}
-			return $db;
+			return $this->selectDb($sucursal);
 		}
 		return null;
 	}

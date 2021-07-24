@@ -51,7 +51,8 @@ use App\Models\Mensualidad;
                                         <input type="hidden" id="ins-<?=$key+1?>" value="<?=$inscripcion['id']?>">
                                         <?=$inscripcion['tipo'] == 1?'Completo':'Suelto' ?> <br>
                                         <?=$inscripcion['nombre']?> <br>
-                                        <?=$inscripcion['turno'].' '.$inscripcion['inicio'].' - '.$inscripcion['fin']?>
+                                        <?=$inscripcion['turno'].' '.$inscripcion['inicio'].' - '.$inscripcion['fin']?> <br>
+                                        <?=Inscripcion::getStrEstado($inscripcion['estado'])?>
                                     </td>
                                 </tr>
                             </tbody>

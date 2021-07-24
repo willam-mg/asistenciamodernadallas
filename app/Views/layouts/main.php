@@ -28,6 +28,7 @@
     <?php endif; ?>
     <div class="wrapper">
         <div class="container">
+            <h4 class="text-center" id="message"></h4>
             <?= $this->renderSection('content') ?>
         </div>
     </div>
@@ -59,10 +60,12 @@
                         }
                         $('#content').html('');
                         $('#content').append(response.view);
+                        $('#message').html('');
+                        $('#message').append(response.message);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         if (jqXHR.status == "500") {
-                            location.reload();
+                            // location.reload();
                         }
                     },
                 });

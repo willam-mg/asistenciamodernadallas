@@ -58,4 +58,44 @@ class Inscripcion extends Model
         'tipo'
     ];
 
+    static public function getStrEstado($estado) {
+        $res = "";
+        switch ($estado) {
+            case self::ESTADO_PROCESANDO :
+                $res = 'PROCESANDO';
+                break;
+            case self::ESTADO_ACTIVO :
+                $res = 'ACTIVO';
+                break;
+            case self::ESTADO_INACTIVO :
+                $res = 'INACTIVO';
+                break;
+            case self::ESTADO_CONGELADO :
+                $res = 'CONGELADO';
+                break;
+            case self::ESTADO_CONCLUIDO :
+                $res = 'GRADUADO';
+                break;
+            default:
+                $res = 'ACTIVO';
+                break;
+        }
+        return $res;
+    }
+
+    /**
+     * retorna las inscripcines que estan activas o inactivas.
+     * @param $inscripciones[] 
+     * @return $inscripciones[]
+     */
+    static public function parseInscripciones($inscripciones) {
+        $res = [];
+        foreach ($inscripciones as $key => $inscripcion) {
+            if ($inscripcion['estado'] == self::ESTADO_ACTIVO || $inscripcion['estado'] == self::ESTADO_INACTIVO ) {
+                array_push($res, $inscripcion);
+            }
+        }
+        return $res;
+    }
+
 }

@@ -29,6 +29,12 @@ use App\Models\Mensualidad;
         </h5>
         <h5>
             <span style="color:#cc3487">
+                Estado
+            </span>
+            <?=Inscripcion::getStrEstado($inscripcion['estado'])?>
+        </h5>
+        <h5>
+            <span style="color:#cc3487">
                 Horario: 
             </span>
             <?=$planHorario['inicio']. ' - '.$planHorario['fin']?>

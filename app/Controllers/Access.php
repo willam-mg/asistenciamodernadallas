@@ -9,6 +9,7 @@ class Access extends BaseController
 {
 	public function index()
 	{
+		$message = "";
 		$db = $this->getDb();
 		if ( !$db ) {
 			return redirect()->to('/home');
@@ -26,11 +27,12 @@ class Access extends BaseController
 				$estudiante = model('Estudiante', true, $db)
 					->where('codigo', $codigoAcceso)
                   	->first();
-				$inscripciones = $db->table('inscripcion')
+				$queryInscripciones = $db->table('inscripcion')
 					->where('estudiante_id', $estudiante['id'])
+					->where('estado <>', Inscripcion::ESTADO_PROCESANDO )
 					->get()
 					->getResultArray(); 
-
+				$inscripciones = Inscripcion::parseInscripciones($queryInscripciones);
 				if ( count($inscripciones) == 0 ) {
 					throw new \Exception("El estuiante no tiene inscripciones");
 				}
@@ -40,11 +42,20 @@ class Access extends BaseController
 				} 
 
 				$inscripcion = $inscripciones[0]; 
+				if ($inscripcion['estado'] == Inscripcion::ESTADO_CONCLUIDO) {
+					throw new \Exception("Inscripcion con estado graduado");
+				}
+				if ($inscripcion['estado'] == Inscripcion::ESTADO_PROCESANDO ) {
+					throw new \Exception("Inscripcion no valida, cancelada a medio inscribir");
+				}
 				return redirect()->to('/access/correcto/'.$inscripcion['id']);
 			} catch (\Throwable $th) {
 				$this->session->setFlashdata('message', $th->getMessage());
+				$message = $th->getMessage();
+
 				if ( $this->request->isAJAX() ) {
 					return json_encode([
+						'message'=>$message,
 						'estudiante_id'=>null,
 						'view'=> view('access/_incorrecto', [
 							'sucursal'=>$sucursal
@@ -56,6 +67,7 @@ class Access extends BaseController
 		}	
 		if ( $this->request->isAJAX() ) {
 			return json_encode([
+				'message'=>$message,
 				'estudiante_id'=>null,
 				'view'=> view('access/_index', [
 					'sucursal'=>$sucursal
@@ -68,6 +80,7 @@ class Access extends BaseController
 	}
 
 	public function seleccionar($id) {
+		$message = "";
 		$db = $this->getDb();
 		if ( !$db ) {
 			return redirect()->to('/home');
@@ -75,7 +88,7 @@ class Access extends BaseController
 		$sucursal = $this->sucursal();
 		$estudiante = model('Estudiante', true, $db)->find($id);
 		$inscripciones = $db->table('inscripcion')
-			->select('inscripcion.id as id, plan.nombre, plan.tipo, plan_horario.inicio, plan_horario.fin, plan_horario.turno')
+			->select('inscripcion.id as id, inscripcion.estado as estado, plan.nombre, plan.tipo, plan_horario.inicio, plan_horario.fin, plan_horario.turno')
 			->join('plan_horario', 'inscripcion.plan_horario_id = plan_horario.id')
 			->join('plan', 'plan_horario.plan_id = plan.id')
 			->where('inscripcion.estudiante_id', $estudiante['id'])
@@ -97,14 +110,22 @@ class Access extends BaseController
 					throw new \Exception("Numero incorrecto");
 				}
 				$idInscripcion = $inscripciones[$index];
+				if ($idInscripcion['estado'] == Inscripcion::ESTADO_CONCLUIDO) {
+					throw new \Exception("Inscripcion con estado graduado");
+				}
+				if ($idInscripcion['estado'] == Inscripcion::ESTADO_PROCESANDO ) {
+					throw new \Exception("Inscripcion no valida, cancelada a medio inscribir");
+				}
 				return redirect()->to('/access/correcto/'.$idInscripcion['id']);
 			} catch (\Throwable $th) {
 				$this->session->setFlashdata( 'message', $th->getMessage() );
+				$message = $th->getMessage();
 			}
 		}
 
 		if ( $this->request->isAJAX() ) {
 			return json_encode([
+				'message'=>$message,
 				'estudiante_id'=>$estudiante['id'],
 				'view'=>view('access/_seleccionar', [
 					'sucursal'=>$sucursal,
@@ -182,9 +203,12 @@ class Access extends BaseController
 				'numIngresos'=>$numIngresos,
 				'debe'=>$debe
 		];
+		$message = session()->getFlashdata('message');
+
 		if ( $this->request->isAJAX() ) {
 			return json_encode([
-				'estudiante_id67'=>null,
+				'message'=>$message,
+				'estudiante_id'=>null,
 				'view'=>view('access/_correcto', $dataCompose)
 			]);
 		}
@@ -192,9 +216,12 @@ class Access extends BaseController
 	}
 	
 	public function incorrecto() {
+		$message = "";
 		$sucursal = $this->sucursal();
+		$message = session()->getFlashdata('message');
 		if ( $this->request->isAJAX() ) {
 			return json_encode([
+				'message'=>$message,
 				'estudiante_id'=>null,
 				'view'=> view('access/_incorrecto', [
 					'sucursal'=>$sucursal

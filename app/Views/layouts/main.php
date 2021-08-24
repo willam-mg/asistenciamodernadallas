@@ -48,6 +48,9 @@
                     data: $('#w0').serialize(),
                     dataType: "JSON",
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    beforeSend: function () {
+                        $("#showBarCode").html("Cargando ...");
+                    },
                     complete: function (jqXHR, textStatus) {
                         sending = false;
                         $("#estudiante-codigo").val('');
@@ -65,7 +68,7 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         if (jqXHR.status == "500") {
-                            // location.reload();
+                            location.reload();
                         }
                     },
                 });

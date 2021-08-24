@@ -34,7 +34,7 @@ class Access extends BaseController
 					->getResultArray(); 
 				$inscripciones = Inscripcion::parseInscripciones($queryInscripciones);
 				if ( count($inscripciones) == 0 ) {
-					throw new \Exception("El estuiante no tiene inscripciones");
+					throw new \Exception("El estudiante no tiene inscripciones");
 				}
 
 				if ( count($inscripciones) > 1 ) {

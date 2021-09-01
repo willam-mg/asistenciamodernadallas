@@ -68,6 +68,8 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         if (jqXHR.status == "500") {
+                            let codigoEstudiante  = $('#w0').serialize();
+                            localStorage.setItem(codigoEstudiante, codigoEstudiante);  
                             location.reload();
                         }
                     },

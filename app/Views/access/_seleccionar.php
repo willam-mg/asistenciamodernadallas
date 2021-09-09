@@ -1,5 +1,5 @@
 <?php
-use App\helpers\Params;
+use App\Helpers\Params;
 use App\Models\Inscripcion;
 use App\Models\Mensualidad;
 ?>

@@ -174,7 +174,7 @@ class Access extends BaseController
 			$data = [
 				'inscripcion_id'=>$inscripcion['id'],
 				'fecha'=> date('Y-m-d'),
-				'hora'=> date('Y-m-d'),
+				'hora'=> date('H:i:s'),
 				'observacion'=> 'n',
 			];
 			$model->insert($data);

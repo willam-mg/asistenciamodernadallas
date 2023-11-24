@@ -166,6 +166,7 @@ class Access extends BaseController
 			->join('casillero', 'asignacion_casillero.casillero_id = casillero.id')
 			->where('asignacion_casillero.estudiante_id', $estudiante['id'])
 			->where('asignacion_casillero.saldo > ', 0)
+			->where('asignacion_casillero.abandono', 0)
 			->get()->getResultArray();
 
 		// registrando asistencia 

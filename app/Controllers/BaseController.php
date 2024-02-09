@@ -75,6 +75,9 @@ class BaseController extends Controller
 			case 'sacaba':
 				return \Config\Database::connect('sacaba');
 				break;
+			case 'tiquipaya':
+				return \Config\Database::connect('tiquipaya');
+				break;
 			case 'cochabamba':
 				return \Config\Database::connect('cochabamba');
 				break;

@@ -69,6 +69,26 @@ class Database extends Config
 		'failover' => [],
 		'port'     => 3306,
 	];
+	
+	public $tiquipaya = [
+		'DSN'      => '',
+		'hostname' => 'localhost',
+		'username' => 'isqpavlk_panel1',
+		'password' => '&!OcQHbqKF_K',
+		'database' => 'isqpavlk_dbtiquipaya',
+		'DBDriver' => 'MySQLi',
+		'DBPrefix' => '',
+		'pConnect' => false,
+		'DBDebug'  => (ENVIRONMENT !== 'production'),
+		'charset'  => 'utf8',
+		'DBCollat' => 'utf8_general_ci',
+		'swapPre'  => '',
+		'encrypt'  => false,
+		'compress' => false,
+		'strictOn' => false,
+		'failover' => [],
+		'port'     => 3306,
+	];
 
 	/**
 	 * This database connection is used when
